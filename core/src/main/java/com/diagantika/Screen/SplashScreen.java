@@ -1,6 +1,7 @@
 package com.diagantika.Screen;
 
 import com.badlogic.gdx.graphics.Color;
+import com.diagantika.Main;
 import com.diagantika.ScreenManager.AbstractScreen;
 
 public class SplashScreen extends AbstractScreen {
@@ -13,6 +14,14 @@ public class SplashScreen extends AbstractScreen {
     public void render(float delta) {
         super.render(delta);
 
+        // apabila aset telah dimuat semua dan transisi telah usai
+        if (context.getAssetManager().update() && main.isTransitionFinished()){
+
+            main.setScreen(
+                new FirstScreen(),
+                main.transitions
+                    .get(Main.TRANSITION.FADE_TRANSITION));
+        }
     }
 
     @Override

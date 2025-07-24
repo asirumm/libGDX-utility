@@ -12,6 +12,8 @@ import com.diagantika.ScreenManager.ApplicationScreen;
 import com.diagantika.ScreenManager.Transition.AbstractScreenTransition;
 import com.diagantika.ScreenManager.Transition.CircleTransition;
 import com.diagantika.ScreenManager.Transition.FadeTransition;
+import com.diagantika.Services.ApplicationContext;
+import com.diagantika.Services.AssetLoader;
 import com.diagantika.Util.Bean;
 import com.diagantika.Util.Logger;
 import com.diagantika.Util.LoggerConfig;
@@ -21,8 +23,10 @@ import java.util.HashMap;
 public class Main extends ApplicationScreen {
     public SpriteBatch batch;
     private LoggerConfig loggerConfig;
+    private ApplicationContext context;
+    public HashMap<TRANSITION, AbstractScreenTransition> transitions;
     public Logger<Main> log = new Logger<>(Main.class, Bean.getLogConfigInstance()) ;
-    private HashMap<TRANSITION, AbstractScreenTransition> transitions;
+
 
     public enum TRANSITION{
         FADE_TRANSITION,
@@ -42,6 +46,15 @@ public class Main extends ApplicationScreen {
         transitions.put(TRANSITION.CIRCLE_TRANSITION,new CircleTransition(1f, Color.BROWN));
         transitions.put(TRANSITION.FADE_TRANSITION,new FadeTransition(1f));
 
+        // load aset
+        AssetLoader assetLoader = new AssetLoader(loggerConfig);
+        assetLoader.load();
+
+        // context
+        context = new ApplicationContext(assetLoader.getAssetManager(),loggerConfig);
+
+        assetLoader = null;
+
         setScreen(new SplashScreen(),transitions.get(TRANSITION.CIRCLE_TRANSITION));
 
     }
@@ -55,12 +68,14 @@ public class Main extends ApplicationScreen {
         /// ini bisa menjadi looping tanpa batas
     }
 
-    public HashMap<TRANSITION, AbstractScreenTransition> getTransitions() {
-        return transitions;
+    public ApplicationContext getContext() {
+        return context;
     }
 
     @Override
     public void dispose() {
+        context.dispose();
         super.dispose();
+        log.info("dispose screen");
     }
 }
