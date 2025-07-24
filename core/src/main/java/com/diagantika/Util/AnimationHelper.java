@@ -7,10 +7,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
 
 public class AnimationHelper {
-    private Logger logger;
+    private Logger<AnimationHelper> logger = new Logger<>(AnimationHelper.class,Bean.getLogConfigInstance());
 
-    public AnimationHelper(LoggerConfig config) {
-        logger = new Logger(getClass().getSimpleName(),config);
+    public AnimationHelper() {
     }
 
     /**

@@ -70,6 +70,10 @@ public class AnimationManager<T> {
         animations.put(name,animation);
     }
 
+    public void setCurrentAnimation(String currentAnimation) {
+        this.currentAnimation = currentAnimation;
+    }
+
     /**
      * @return Texture pertama
      */
