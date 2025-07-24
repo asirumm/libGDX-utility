@@ -1,3 +1,4 @@
+/log/*
 ## Gradle:
 .gradle/
 gradle-app.setting
