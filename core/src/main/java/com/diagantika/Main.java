@@ -1,12 +1,7 @@
 package com.diagantika;
 
-import com.badlogic.gdx.ApplicationAdapter;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.utils.ScreenUtils;
 import com.diagantika.Screen.SplashScreen;
 import com.diagantika.ScreenManager.ApplicationScreen;
 import com.diagantika.ScreenManager.Transition.AbstractScreenTransition;
@@ -16,7 +11,6 @@ import com.diagantika.Services.ApplicationContext;
 import com.diagantika.Services.AssetLoader;
 import com.diagantika.Util.Bean;
 import com.diagantika.Util.Logger;
-import com.diagantika.Util.LoggerConfig;
 
 import java.util.HashMap;
 
@@ -24,8 +18,7 @@ public class Main extends ApplicationScreen {
     public SpriteBatch batch;
     private ApplicationContext context;
     public HashMap<TRANSITION, AbstractScreenTransition> transitions;
-
-    public Logger<Main> log ;
+    public Logger<Main> log  ;
 
     public enum TRANSITION{
         FADE_TRANSITION,
@@ -36,7 +29,8 @@ public class Main extends ApplicationScreen {
     public void create() {
         super.create();
 
-        log =  new Logger<>(Main.class, Bean.getLogConfigInstance());
+        // ini disini karena lifecycle main class lebih dahulu dari BEan
+        log  = new Logger<>(Main.class, Bean.getLogConfigInstance());
         batch = super.batch;
 
         log.info("memulai setup");

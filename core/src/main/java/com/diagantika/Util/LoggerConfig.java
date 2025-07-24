@@ -8,7 +8,7 @@ public class LoggerConfig {
     // Desktop: Folder user home/.namaproject/
     //
     //Android: Di folder data/data/namapackage/files
-    private FileHandle logFile = Gdx.files.local(Constant.LOG_PATH);
+    private final FileHandle logFile = Gdx.files.local(Constant.LOG_PATH);
 
     private boolean writeToFile;
 
