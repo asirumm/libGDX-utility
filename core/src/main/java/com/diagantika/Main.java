@@ -45,6 +45,7 @@ public class Main extends ApplicationScreen {
 
         // context
         context = new ApplicationContext(assetLoader.getAssetManager());
+        context.setSkinWidget(assetLoader.getWidgetSkin());
 
         assetLoader = null;
 

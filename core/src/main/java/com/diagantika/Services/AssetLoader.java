@@ -47,7 +47,7 @@ public class AssetLoader implements Disposable {
     public void load(){
         logger.info("memulai load aset");
         loadAtlases();
-//        loadWidgetSkin();
+        loadWidgetSkin();
     }
 
     public Skin getWidgetSkin() {
