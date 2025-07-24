@@ -10,6 +10,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.*;
 import com.diagantika.Constant;
 import com.diagantika.Main;
+import com.diagantika.Util.Bean;
 import com.diagantika.Util.Logger;
 
 
@@ -19,7 +20,7 @@ import java.util.Stack;
  * Use this class for all screen you have
  */
 public abstract class AbstractScreen implements Screen {
-    protected Logger logger;
+    protected Logger<? extends AbstractScreen> logger;
     protected final int VIRTUAL_UI_WIDTH = 640;
     protected final int VIRTUAL_UI_HEIGHT = 320;
     protected SpriteBatch batch;
@@ -31,8 +32,8 @@ public abstract class AbstractScreen implements Screen {
     public AbstractScreen() {
 
         main = (Main) Gdx.app.getApplicationListener();
-        logger = main.log;
-        logger.updatePrefix(this.getClass().getSimpleName());
+        logger = new Logger<>(this.getClass(), Bean.getLogConfigInstance());
+
         batch = main.batch;
 
         logger.info("start screen");
