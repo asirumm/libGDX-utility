@@ -2,33 +2,65 @@ package com.diagantika;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.diagantika.Screen.SplashScreen;
+import com.diagantika.ScreenManager.ApplicationScreen;
+import com.diagantika.ScreenManager.Transition.AbstractScreenTransition;
+import com.diagantika.ScreenManager.Transition.CircleTransition;
+import com.diagantika.ScreenManager.Transition.FadeTransition;
+import com.diagantika.Util.Bean;
+import com.diagantika.Util.Logger;
+import com.diagantika.Util.LoggerConfig;
 
-/** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
-public class Main extends ApplicationAdapter {
-    private SpriteBatch batch;
-    private Texture image;
+import java.util.HashMap;
+
+public class Main extends ApplicationScreen {
+    public SpriteBatch batch;
+    private LoggerConfig loggerConfig;
+    public Logger<Main> log = new Logger<>(Main.class, Bean.getLogConfigInstance()) ;
+    private HashMap<TRANSITION, AbstractScreenTransition> transitions;
+
+    public enum TRANSITION{
+        FADE_TRANSITION,
+        CIRCLE_TRANSITION
+    }
 
     @Override
     public void create() {
-        batch = new SpriteBatch();
-        image = new Texture("libgdx.png");
+        batch = super.batch;
+        loggerConfig = new LoggerConfig();
+
+        loggerConfig.configure(false, LoggerConfig.LogLevel.DEBUG);
+
+        log.info("memulai setup");
+
+        transitions = new HashMap<>();
+        transitions.put(TRANSITION.CIRCLE_TRANSITION,new CircleTransition(1f, Color.BROWN));
+        transitions.put(TRANSITION.FADE_TRANSITION,new FadeTransition(1f));
+
+        setScreen(new SplashScreen(),transitions.get(TRANSITION.CIRCLE_TRANSITION));
+
     }
 
     @Override
     public void render() {
         ScreenUtils.clear(0.15f, 0.15f, 0.2f, 1f);
-        batch.begin();
-        batch.draw(image, 140, 210);
-        batch.end();
+
+
+        /// KOSONGKAN SAJA, karena pada parent ada currentScreen.show();
+        /// ini bisa menjadi looping tanpa batas
+    }
+
+    public HashMap<TRANSITION, AbstractScreenTransition> getTransitions() {
+        return transitions;
     }
 
     @Override
     public void dispose() {
-        batch.dispose();
-        image.dispose();
+        super.dispose();
     }
 }
