@@ -1,7 +1,10 @@
 package com.diagantika;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.profiling.GLProfiler;
 import com.diagantika.Screen.SplashScreen;
 import com.diagantika.ScreenManager.ApplicationScreen;
 import com.diagantika.ScreenManager.Transition.AbstractScreenTransition;
@@ -45,6 +48,7 @@ public class Main extends ApplicationScreen {
 
         // context
         context = new ApplicationContext(assetLoader.getAssetManager());
+        context.setWidgetSkin(assetLoader.getWidgetSkin());
 
         assetLoader = null;
 

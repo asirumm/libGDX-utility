@@ -1,6 +1,7 @@
 package com.diagantika.Services;
 
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Disableable;
 import com.badlogic.gdx.utils.Disposable;
 import com.diagantika.Util.Bean;
@@ -14,6 +15,7 @@ import com.diagantika.Util.LoggerConfig;
 public class ApplicationContext implements Disposable {
     private Logger<ApplicationContext> log = new Logger<>(ApplicationContext.class, Bean.getLogConfigInstance());
     private final AssetManager assetManager;
+    private Skin widgetSkin;
 
     public ApplicationContext(AssetManager assetManager) {
 
@@ -23,6 +25,15 @@ public class ApplicationContext implements Disposable {
 
     public AssetManager getAssetManager() {
         return assetManager;
+    }
+
+    public void setWidgetSkin(Skin widgetSkin) {
+        log.debug("widget skin telah di inject");
+        this.widgetSkin = widgetSkin;
+    }
+
+    public Skin getWidgetSkin() {
+        return widgetSkin;
     }
 
     @Override

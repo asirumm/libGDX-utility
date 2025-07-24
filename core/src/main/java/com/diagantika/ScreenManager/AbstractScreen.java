@@ -52,6 +52,7 @@ public abstract class AbstractScreen implements Screen {
         ScreenUtils.clear(getColor());
 
 
+        renderStageUI(delta);
     }
 
     protected void renderStageUI(float delta){

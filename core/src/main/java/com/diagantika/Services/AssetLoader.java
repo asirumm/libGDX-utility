@@ -18,7 +18,7 @@ import com.diagantika.Util.Bean;
 import com.diagantika.Util.Logger;
 import com.diagantika.Util.LoggerConfig;
 
-public class AssetLoader implements Disposable {
+public class AssetLoader {
     private Logger<AssetLoader> logger = new Logger<>(AssetLoader.class, Bean.getLogConfigInstance());
     private AssetManager assetManager;
     private Skin widgetSkin;// spesial karena load freetypefont berbeda
@@ -46,8 +46,8 @@ public class AssetLoader implements Disposable {
 
     public void load(){
         logger.info("memulai load aset");
+        loadWidgetSkin();
         loadAtlases();
-//        loadWidgetSkin();
     }
 
     public Skin getWidgetSkin() {
@@ -70,6 +70,9 @@ public class AssetLoader implements Disposable {
      * agar font tidak blur
      */
     private void loadWidgetSkin(){
+
+        logger.debug("load skin dan freetype font");
+
         this.widgetSkin = new Skin(Gdx.files.internal(Constant.widgetSkin)) {
             //Override json loader to process FreeType fonts from skin JSON
             @Override
@@ -115,11 +118,5 @@ public class AssetLoader implements Disposable {
                 return json;
             }
         };
-    }
-
-    @Override
-    public void dispose() {
-        assetManager.dispose();
-        logger.info("dispose");
     }
 }
