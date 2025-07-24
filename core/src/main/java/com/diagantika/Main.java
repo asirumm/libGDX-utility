@@ -16,7 +16,7 @@ import java.util.HashMap;
 
 public class Main extends ApplicationScreen {
     public SpriteBatch batch;
-    private ApplicationContext context;
+    public ApplicationContext context;
     public HashMap<TRANSITION, AbstractScreenTransition> transitions;
     public Logger<Main> log  ;
 
