@@ -2,8 +2,6 @@ package com.diagantika.Animation;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.util.HashMap;
 
