@@ -6,5 +6,5 @@ public class Constant {
     public static int MAIN_HEIGHT = 720;
 
 
-    public static String widgetSkin = "assets.json";
+    public static String widgetSkin = "widget.json";
 }

@@ -10,6 +10,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.*;
 import com.diagantika.Constant;
 import com.diagantika.Main;
+import com.diagantika.Services.ApplicationContext;
 import com.diagantika.Util.Bean;
 import com.diagantika.Util.Logger;
 
@@ -24,6 +25,7 @@ public abstract class AbstractScreen implements Screen {
     protected final int VIRTUAL_UI_WIDTH = 640;
     protected final int VIRTUAL_UI_HEIGHT = 320;
     protected SpriteBatch batch;
+    protected ApplicationContext context;
 
     protected Stage stageUI;
     protected Main main;
@@ -34,6 +36,7 @@ public abstract class AbstractScreen implements Screen {
         main = (Main) Gdx.app.getApplicationListener();
         logger = new Logger<>(this.getClass(), Bean.getLogConfigInstance());
 
+        context = main.context;
         batch = main.batch;
 
         logger.info("start screen");
