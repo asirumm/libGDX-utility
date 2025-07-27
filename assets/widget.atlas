@@ -1,0 +1,65 @@
+
+widget.png
+size: 256, 256
+format: RGBA8888
+filter: Nearest, Nearest
+repeat: none
+attack-ico
+  rotate: false
+  xy: 207, 205
+  size: 48, 48
+  orig: 48, 48
+  offset: 0, 0
+  index: -1
+empty-ico
+  rotate: false
+  xy: 207, 155
+  size: 48, 48
+  orig: 48, 48
+  offset: 0, 0
+  index: -1
+button-down
+  rotate: false
+  xy: 1, 206
+  size: 112, 47
+  split: 5, 5, 8, 5
+  pad: 7, 7, 5, 6
+  orig: 112, 47
+  offset: 0, 0
+  index: -1
+button-up
+  rotate: false
+  xy: 1, 157
+  size: 112, 47
+  split: 4, 4, 4, 7
+  pad: 8, 9, 0, 10
+  orig: 112, 47
+  offset: 0, 0
+  index: -1
+card-back
+  rotate: false
+  xy: 1, 45
+  size: 90, 110
+  split: 4, 4, 5, 7
+  pad: 0, 0, 0, 0
+  orig: 90, 110
+  offset: 0, 0
+  index: -1
+card-front
+  rotate: false
+  xy: 115, 124
+  size: 90, 110
+  split: 6, 6, 6, 6
+  pad: 8, 8, 6, 7
+  orig: 90, 110
+  offset: 0, 0
+  index: -1
+title-card
+  rotate: false
+  xy: 115, 236
+  size: 90, 17
+  split: 6, 6, 0, 0
+  pad: 0, 0, 0, 2
+  orig: 90, 17
+  offset: 0, 0
+  index: -1

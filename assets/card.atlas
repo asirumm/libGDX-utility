@@ -1,0 +1,17 @@
+card.png
+size:512,128
+repeat:none
+card-back
+bounds:94,2,90,110
+split:4,4,5,7
+pad:0,0,0,0
+card-front
+bounds:278,2,90,110
+split:6,6,6,6
+pad:8,8,6,7
+card2
+bounds:370,2,90,110
+card3
+bounds:186,2,90,110
+card4
+bounds:2,2,90,110

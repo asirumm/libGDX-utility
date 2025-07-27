@@ -10,7 +10,8 @@ import com.diagantika.ScreenManager.Transition.FadeTransition;
 import com.diagantika.Services.ApplicationContext;
 import com.diagantika.Services.AssetLoader;
 import com.diagantika.Util.Bean;
-import com.diagantika.Util.Logger;
+import net.dermetfan.gdx.assets.AnnotationAssetManager;
+import org.tinylog.Logger;
 
 import java.util.HashMap;
 
@@ -18,7 +19,6 @@ public class Main extends ApplicationScreen {
     public SpriteBatch batch;
     public ApplicationContext context;
     public HashMap<TRANSITION, AbstractScreenTransition> transitions;
-    public Logger<Main> log  ;
 
     public enum TRANSITION{
         FADE_TRANSITION,
@@ -30,10 +30,9 @@ public class Main extends ApplicationScreen {
         super.create();
 
         // ini disini karena lifecycle main class lebih dahulu dari BEan
-        log  = new Logger<>(Main.class, Bean.getLogConfigInstance());
         batch = super.batch;
 
-        log.info("memulai setup");
+        Logger.info("start");
 
         transitions = new HashMap<>();
         transitions.put(TRANSITION.CIRCLE_TRANSITION,new CircleTransition(1f, Color.BROWN));
@@ -57,6 +56,6 @@ public class Main extends ApplicationScreen {
     public void dispose() {
         context.dispose();
         super.dispose();
-        log.info("dispose screen");
+        Logger.info("dispose screen");
     }
 }

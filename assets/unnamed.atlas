@@ -1,0 +1,11 @@
+unnamed.png
+size:256,128
+repeat:none
+card-back
+bounds:2,2,90,110
+split:4,4,5,7
+pad:0,0,0,0
+card-front
+bounds:94,2,90,110
+split:6,6,6,6
+pad:8,8,6,7

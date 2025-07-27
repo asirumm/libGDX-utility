@@ -5,9 +5,9 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
+import org.tinylog.Logger;
 
 public class AnimationHelper {
-    private Logger<AnimationHelper> logger = new Logger<>(AnimationHelper.class,Bean.getLogConfigInstance());
 
     public AnimationHelper() {
     }
@@ -44,7 +44,7 @@ public class AnimationHelper {
                     TextureRegion singleRegion = atlas.findRegion(prefix);
                     if (singleRegion != null) {
 
-                        logger.debug("menambahkan image %s tanpa index number",prefix);
+                        Logger.debug("menambahkan image {} tanpa index number",prefix);
 
                         animationFrames.add(singleRegion);
                     }
@@ -52,7 +52,7 @@ public class AnimationHelper {
                 break;
             }
 
-            logger.debug("menambahkan image %s ",prefix+i);
+            Logger.debug("menambahkan image {} ",prefix+i);
 
             animationFrames.add(region);
         }
@@ -81,7 +81,7 @@ public class AnimationHelper {
                 break;
             }
 
-            logger.debug("Menambahkan image: %s", name);
+            Logger.debug("Menambahkan image: {}", name);
 
             animationFrames.add(drawable);
         }

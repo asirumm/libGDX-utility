@@ -3,10 +3,12 @@ package com.diagantika.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.diagantika.Main;
 import com.diagantika.ScreenManager.AbstractScreen;
+import org.tinylog.Logger;
 
 public class SplashScreen extends AbstractScreen {
     @Override
     public void show() {
+        Logger.debug("start scereen");
 
     }
 
