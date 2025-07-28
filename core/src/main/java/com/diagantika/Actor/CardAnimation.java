@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Interpolation;
-import com.badlogic.gdx.utils.GdxRuntimeException;
 import org.tinylog.Logger;
 
 public class CardAnimation {
@@ -14,52 +13,56 @@ public class CardAnimation {
     private TextureRegion frontCard;
     private TextureRegion currentRenderCard;
 
-    private boolean flipStatus = false;// flag ketika animasi akan dijalankan
-    private boolean hasSwitched = false; // FLAG UNTUK MENCEGAH MULTIPLE SWITCH
+    // flag untuk menjalankan atau mematikan animasi flip
+    private CardFlag animationFlipStatus = CardFlag.ANIMATION_FLIP_NOT_RUNNING;
+
+    // flag untuk mengetahui apakah texture sudah boleh di ubah saat flip
+    private boolean canChangeTexture = false;
 
     private float flipTimer = 0f;// timer flip antara 0-1
+    private final float MAX_FLIP_TIMER = 1f;
     private float flipDuration = 0.5f;// durasi animasi pengatur kecepatan flipjumat
 
     // titik pusat untuk rotasi
     private float originX;
     private float originY;
 
-
-    private boolean stopDrawing=false;// flag ketika card sudah matches kita stop draw
+    // flag ketika card sudah matches kita stop draw
+    private CardFlag drawingStatus = CardFlag.CARD_ANIMATION_ACTIVE;
 
     public CardAnimation(Card card) {
         this.card = card;
     }
 
-
+    public CardFlag getAnimationFlipStatus() {
+        return animationFlipStatus;
+    }
 
     /**
      * membuat posisi untuk putaran texture ketika
      * di batch akan di rotasikan
      * kita set di tengah texture
      */
-    private void originTexture(TextureRegion region){
+    private void setOriginRotationTexture(TextureRegion region){
         originX = region.getRegionWidth() * 0.5f;
         originY = region.getRegionHeight() * 0.5f;
     }
 
     public void build(TextureRegion frontCard, TextureRegion backCard){
-        if (backCard==null || frontCard==null){
-            throw new GdxRuntimeException("silahkan set back dan front texture terlebih dahulu dengan");
-        }
 
         // kartu yang akan dirender pertama
         currentRenderCard = backCard;
         this.frontCard = frontCard;
         this.backCard = backCard;
 
-        originTexture(currentRenderCard);
+        setOriginRotationTexture(currentRenderCard);
     }
 
     public void draw(Batch batch) {
 
 
-        if (!stopDrawing){
+        // apabila masih belum ditemukan pasangan kita terus menggambar
+        if (drawingStatus==CardFlag.CARD_ANIMATION_ACTIVE){
             updateFlipAnimation();
             drawCard(batch);
         }
@@ -73,17 +76,21 @@ public class CardAnimation {
     public void startAnimation(){
         Logger.debug("animasi flip dijalankan");
 
-        flipStatus = true;
+        // persiapan nilai untuk run animasi
+        animationFlipStatus = CardFlag.ANIMATION_FLIP_RUNNING;
+        // kita memulai dari 0 - 1
         flipTimer = 0f;
-        hasSwitched = false; // RESET FLAG SAAT MULAI FLIP BARU
+        // texture belum boleh diganti
+        canChangeTexture = false;
     }
 
     private float calculateFlipScale() {
         // atur waktu animasi
         // ketika belum disuruh animasi maka kita kembalikan nilai 1f
         // karena kita akan menghitung dari 0 sampai 1 untuk efek flip animasi
-        // dengan interpolasi
-        if (!flipStatus) return 1.f;
+        // d2engan interpolasi
+        if (animationFlipStatus==CardFlag.ANIMATION_FLIP_NOT_RUNNING)
+            return MAX_FLIP_TIMER;
 
         float scaleX;
 
@@ -92,6 +99,7 @@ public class CardAnimation {
             float shrinkProgress = flipTimer * 2.0f;
             scaleX = 1.0f - shrinkProgress;
             scaleX = Interpolation.pow2Out.apply(scaleX);
+
         } else {
             // FASE 2: EXPANDING (0.0 → 1.0)
             float expandProgress = (flipTimer - 0.5f) * 2.0f;
@@ -127,7 +135,7 @@ public class CardAnimation {
      */
     private void updateFlipAnimation() {
         // apabila belum disuruh menjalankan animasi
-        if (!flipStatus) return;
+        if (animationFlipStatus==CardFlag.ANIMATION_FLIP_NOT_RUNNING) return;
 
         // 1. UPDATE PROGRESS TIMER
         flipTimer += Gdx.graphics.getDeltaTime() / flipDuration;
@@ -135,22 +143,22 @@ public class CardAnimation {
         // 2. SWITCH KARTU SEKALI SAAT MENCAPAI 50%
         // ketika sudah 50% kartu berhasil di switch maka
         // ubah gambar ke sisi sebaliknya
-        if (flipTimer >= 0.5f && !hasSwitched) {
+        if (flipTimer >= 0.5f && !canChangeTexture) {
             switchCardSide();
-            hasSwitched = true; // TANDAI SUDAH SWITCH
+            canChangeTexture = true; // TANDAI SUDAH SWITCH
         }
 
         // 3. SELESAIKAN ANIMASI
         // apabila sudah mencapai timer maks kita hentikan animasi
         if (flipTimer >= 1.0f) {
             flipTimer = 1.0f;
-            flipStatus = false;
+            animationFlipStatus = CardFlag.ANIMATION_FLIP_NOT_RUNNING;
         }
     }
 
     public void stopDrawing(){
         Logger.debug("menghentikan gambar kartu");
-        stopDrawing = true;
+        drawingStatus = CardFlag.CARD_ANIMATION_INACTIVE;
     }
 
     /**

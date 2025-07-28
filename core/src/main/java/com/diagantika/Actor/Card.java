@@ -6,18 +6,20 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.diagantika.Util.AssetChecker;
 import org.tinylog.Logger;
 
 public class Card extends Actor implements Comparable<Card>{
 
     private CardAnimation cardAnimation;
-    private String cardIdentity;
+    private String cardID;
 
-    private boolean matches    = false;
+    private CardFlag matchesStatus = CardFlag.CARD_UNMATCHES;
     // flag stop menggambar untuk card animation
-    private boolean hasStoppedDrawing = false;
+    private CardFlag animationDrawStatus = CardFlag.CARD_ANIMATION_ACTIVE;
 
+    // flag ketika card sudah di klik maka tidak bisa di klik lagi
+    // agar tidak spam klik pada kartu yang sama
     private boolean isClicked= false;
 
 
@@ -30,16 +32,36 @@ public class Card extends Actor implements Comparable<Card>{
         addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                // ketika user sudah klik kartu X
+                // maka ketika klik ke 2x tidak ada respon
                 if (isClicked) return; // langsung tolak klik berikutnya
 
-                cardAnimation.startAnimation(); // animasi dimulai
+                // memulai animasi flip
+                cardAnimation.startAnimation();
+
+                // menambah instance di comparison
                 CardComparisonManager.getInstance().selectedCard(Card.this); // logika lanjutan
-                isClicked = true; // kunci sebelum animasi
+
+                // kunci kartu agar tidak bisa di klik 2x
+                // yang menyebabkan animasi flip berulang pada
+                // kartu yang sama
+                isClicked = true;
 
             }
         });
     }
 
+    /**
+     * status animasi flip jika Running maka
+     * animasi sedang berjalan
+     */
+    public CardFlag statusFlipAnimation() {
+        return cardAnimation.getAnimationFlipStatus();
+    }
+
+    /**
+     * trigger agar animasi dijalankan
+     */
     public void triggerFlipForAnimation(){
         cardAnimation.startAnimation();
     }
@@ -49,15 +71,16 @@ public class Card extends Actor implements Comparable<Card>{
     }
 
     public void build(TextureRegion frontCard, TextureRegion backCard, String cardIdentity){
-        if (frontCard==null){
-            throw new GdxRuntimeException("front card masih null");
-        } else if (backCard==null) {
-            throw new GdxRuntimeException("back card masih null");
-        }
 
+        //cek isi parameter
+        AssetChecker.checkAsset(frontCard,"front card");
+        AssetChecker.checkAsset(backCard,"back card");
+
+        // atur ukuran gambar
         setSize(frontCard.getRegionWidth(), frontCard.getRegionHeight());
 
-        this.cardIdentity = cardIdentity;
+        // identitas kartu
+        this.cardID = cardIdentity;
 
         cardAnimation.build(frontCard,backCard);
     }
@@ -67,45 +90,42 @@ public class Card extends Actor implements Comparable<Card>{
 
         super.draw(batch,parentAlpha);
 
-        // jika belum ditemukan matches nya maka jangan berhenti gambar
-        if (!matches) {
+        // jika belum ditemukan pasangannya maka jangan berhenti gambar
+        if (matchesStatus==CardFlag.CARD_UNMATCHES) {
             cardAnimation.draw(batch);
-        } else {
-            // stop drawing flag dibuat agar kita tidak selalu memanggil
-            // method stopDrawing
 
-            if (!hasStoppedDrawing) {
-                cardAnimation.stopDrawing();
-                hasStoppedDrawing = true; // hanya sekali!
-            }
         }
-    }
+        // ketika status kartu sudah ditemukan pasangannya
+        // kita hentikan proses menggambar di animation card
+        else if (matchesStatus==CardFlag.CARD_MATCHES){
 
-    public String getCardIdentity() {
-        return cardIdentity;
+            if (animationDrawStatus==CardFlag.CARD_ANIMATION_ACTIVE){
+                cardAnimation.stopDrawing();
+                animationDrawStatus = CardFlag.CARD_ANIMATION_INACTIVE;
+            }
+
+        }
     }
 
     @Override
     public String toString() {
         return
-            "frontCardIdentity='" + cardIdentity + '\'';
+            "frontCardIdentity='" + cardID + '\'';
     }
 
     @Override
     public int compareTo(Card o) {
-        int result = this.cardIdentity.compareTo(o.cardIdentity);
+        int result = this.cardID.compareTo(o.cardID);
 
+        // apabila true
         if (result == 0) {
             Logger.debug("kartu berpasangan ditemukan card 1 {} dan card 2 {}",
-                this.cardIdentity,o.cardIdentity);
+                this.cardID,o.cardID);
 
-            this.matches = true;
-            o.matches = true;
+            // ganti flag agar dihentikan proses menggambarnya
+            this.matchesStatus = CardFlag.CARD_MATCHES;
+            o.matchesStatus = CardFlag.CARD_MATCHES;
         }
         return result;
-    }
-
-    public CardAnimation getCardAnimation() {
-        return cardAnimation;
     }
 }
