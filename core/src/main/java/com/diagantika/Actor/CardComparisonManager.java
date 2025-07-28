@@ -50,7 +50,7 @@ public class CardComparisonManager {
     }
 
     public void compareCards() {
-        // penengecekan apakah semua card sudah terisi
+        // pengecekan apakah semua card sudah terisi
         if (selectedCard1 == null || selectedCard2 == null) {
             Logger.warn("Gagal membandingkan kartu: salah satu kartu masih null");
             return;
@@ -61,70 +61,88 @@ public class CardComparisonManager {
         // proses membandingkan
         int result = selectedCard1.compareTo(selectedCard2);
 
-        // Tangkap kartu ke variabel final lokal agar tidak null saat Timer jalan
-
+        // Tangkap kartu ke variabel final lokal agar tidak null saat Thread jalan
         final Card card1 = selectedCard1;
         final Card card2 = selectedCard2;
 
         // apabila tidak match
-        // maka kita akan jalankan animasi flip
         if (result != 0) {
             Logger.debug("gak matches");
-
 
             card1.setClicked(false);
             card2.setClicked(false);
 
-            // time schedule
-            // kita akan terus eksekusi kode ini dalam rentan 800 ms
-            // sampai kondisi terpenuhi dan akan dimatikan oleh
-            // scheduler.shoutdown
-            ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
-            scheduler.scheduleAtFixedRate(() -> {
+            // Gunakan Thread dengan Runnable untuk menunggu animasi selesai
+            Thread animationWaitThread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        // Loop sampai animasi selesai
+                        while (card1.statusFlipAnimation() != CardFlag.ANIMATION_FLIP_NOT_RUNNING ||
+                                card2.statusFlipAnimation() != CardFlag.ANIMATION_FLIP_NOT_RUNNING) {
 
-                // apabila semua animasi pada kartu yang dipilih sudah selesai
-                if (card1.statusFlipAnimation() == CardFlag.ANIMATION_FLIP_NOT_RUNNING &&
-                    card2.statusFlipAnimation() == CardFlag.ANIMATION_FLIP_NOT_RUNNING) {
-
-                    Logger.debug("start trigger animation flip");
-                    // kita flip balik ke belakang backTexture
-                    card2.triggerFlipForAnimation();
-                    card1.triggerFlipForAnimation();
-
-                    resetSelection();
-                    scheduler.shutdown(); // stop proses schedule
-
-                } else {
-                    Logger.debug("menunggu flip selesai");
-                }
-            }, 0, 100, TimeUnit.MILLISECONDS); // cek setiap 100ms
-
-
-        } else {
-            // Tunggu sebentar sebelum reset
-            ScheduledExecutorService resetScheduler = Executors.newSingleThreadScheduledExecutor();
-            resetScheduler.schedule(() -> {
-                        // apabila semua animasi pada kartu yang dipilih sudah selesai
-                        if (card1.statusFlipAnimation() == CardFlag.ANIMATION_FLIP_NOT_RUNNING &&
-                                card2.statusFlipAnimation() == CardFlag.ANIMATION_FLIP_NOT_RUNNING) {
-                            Logger.debug("Reset setelah MATCH");
-                            resetSelection();
-                            comparisionFinished = true;
-
-                            resetScheduler.shutdown();
+                            Logger.debug("menunggu flip selesai");
+                            Thread.sleep(100); // tunggu 100ms sebelum cek lagi
                         }
 
+                        // Setelah animasi selesai, flip balik ke belakang backTexture
+                        Logger.debug("start trigger animation flip");
+                        card2.triggerFlipForAnimation();
+                        card1.triggerFlipForAnimation();
 
-            }, 100, TimeUnit.MILLISECONDS); // delay sesuai animasi
+                        // Reset selection (comparisionFinished sudah true dari awal)
+                        resetSelection();
 
-            comparisionFinished = true; // tetap tandai selesai agar render tidak panggil terus
+                    } catch (InterruptedException e) {
+                        Logger.error("Thread interrupted: {}", e.getMessage());
+                        Thread.currentThread().interrupt(); // restore interrupted status
+                    }
+                }
+            });
+
+            // Start thread
+            animationWaitThread.start();
+
+            // Set flag segera setelah start thread agar render() tidak panggil lagi
+            comparisionFinished = true;
+
+        } else {
+            // Kartu match - tunggu animasi selesai sebelum reset
+            Thread matchWaitThread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        // Tunggu sebentar untuk animasi
+                        Thread.sleep(100);
+
+                        // Tunggu sampai animasi selesai
+                        while (card1.statusFlipAnimation() != CardFlag.ANIMATION_FLIP_NOT_RUNNING ||
+                                card2.statusFlipAnimation() != CardFlag.ANIMATION_FLIP_NOT_RUNNING) {
+                            Thread.sleep(50); // cek lebih sering untuk match
+                        }
+
+                        Logger.debug("Reset setelah MATCH");
+                        resetSelection();
+                        // comparisionFinished sudah di-set true dari awal
+
+                    } catch (InterruptedException e) {
+                        Logger.error("Thread interrupted: {}", e.getMessage());
+                        Thread.currentThread().interrupt();
+                    }
+                }
+            });
+
+            // Start thread
+            matchWaitThread.start();
+
+            // Set flag segera setelah start thread agar render() tidak panggil lagi
+            comparisionFinished = true;
         }
 
-        resetSelection();
-        comparisionFinished = true;
-
+        // HAPUS baris ini - jangan reset langsung!
+        // resetSelection();
+        // comparisionFinished = true;
     }
-
     public void setComparisionFinished(boolean comparisionFinished) {
         this.comparisionFinished = comparisionFinished;
     }
