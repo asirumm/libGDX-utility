@@ -132,6 +132,8 @@ public class CardComparisonManager {
                 }
             });
 
+            // Set sebagai daemon thread agar mati ketika aplikasi di-close
+            matchWaitThread.setDaemon(true);
             // Start thread
             matchWaitThread.start();
 
