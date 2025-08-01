@@ -1,0 +1,15 @@
+Main [create()] [INFO] :  start
+ApplicationContext [<init>()] [DEBUG] :  instance application context telah dibuat
+SplashScreen [show()] [DEBUG] :  start scereen
+FirstScreen [show()] [DEBUG] :  start scereen
+CardManager [frontCardGenerate()] [DEBUG] :  mengisi array front card selesai
+CardManager [CardInstance()] [DEBUG] :  instance card telah dibuat frontCardIdentity='card-9528'
+CardManager [CardInstance()] [DEBUG] :  instance card telah dibuat frontCardIdentity='card-9528'
+CardManager [CardInstance()] [DEBUG] :  instance card telah dibuat frontCardIdentity='card-6035'
+CardManager [CardInstance()] [DEBUG] :  instance card telah dibuat frontCardIdentity='card-6035'
+CardManager [CardInstance()] [DEBUG] :  instance card telah dibuat frontCardIdentity='card-4130'
+CardManager [CardInstance()] [DEBUG] :  instance card telah dibuat frontCardIdentity='card-4130'
+CardManager [generateCardPairs()] [DEBUG] :  mengisi array pairs card  selesai
+AbstractScreen [dispose()] [INFO] :  dispose
+AbstractScreen [dispose()] [INFO] :  dispose
+Main [dispose()] [INFO] :  dispose screen

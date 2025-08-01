@@ -17,10 +17,10 @@ public class SplashScreen extends AbstractScreen {
         super.render(delta);
 
         // apabila aset telah dimuat semua dan transisi telah usai
-        if (context.getAssetManager().update() && main.isTransitionFinished()){
+        if ( main.isTransitionFinished()){
 
             main.setScreen(
-                new FirstScreen(),
+                new SecondScreen(),
                 main.transitions
                     .get(Main.TRANSITION.FADE_TRANSITION));
         }
